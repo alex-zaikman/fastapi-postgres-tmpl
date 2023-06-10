@@ -1,0 +1,12 @@
+pydantic
+fastapi[all]
+uvicorn[standard]
+python-jose[cryptography]
+bcrypt
+passlib[bcrypt]
+fastapi-jwt-auth[asymmetric]
+python-multipart
+certifi
+python-dateutil
+psycopg2
+sqlalchemy
