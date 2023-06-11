@@ -1,14 +1,12 @@
-import json
 import logging
 from typing import List
 
 import uvicorn
 from fastapi import FastAPI, Depends
-from pydantic import BaseModel
-from sqlalchemy import select
 
 from src.database import engine, Base, get_session
-from src.models import users
+from src.models import User
+from src.schema import users
 
 app = FastAPI()
 
@@ -24,20 +22,12 @@ async def root():
     return {"message": "Hello World"}
 
 
-class User(BaseModel):
-    email: str
-    password: str
-    id: int
-
-    class Config:
-        orm_mode = True
-
-
 @app.get("/listUsers", response_model=List[User])
 async def list_users(session=Depends(get_session)):
     query = users.select()
     result = await session.execute(query)
     return result.all()
+
 
 if __name__ == '__main__':
     uvicorn.run("api:app",
