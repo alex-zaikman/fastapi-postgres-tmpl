@@ -14,7 +14,10 @@ from jose.constants import ALGORITHMS
 from fastapi import HTTPException, Depends, status, Request
 from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 
-from src.models import TokenData, TokenType, User
+from src.database import get_session
+from src.models.token import TokenData, TokenType
+from src.models.users import User
+from src.schema.users import get_db_user
 
 # Auth conf
 API_ALGORITHM = os.environ.get("API_ALGORITHM", ALGORITHMS.HS256)
@@ -46,7 +49,10 @@ def get_hash(str_to_hash: str) -> str:
     return _pwd_context.hash(str_to_hash)
 
 
-async def validate_token_data(security_scopes: SecurityScopes, token__: str = Depends(oauth2_scheme)) -> TokenData:
+async def validate_token_data(security_scopes: SecurityScopes,
+                              session=Depends(get_session),
+                              token__: str = Depends(oauth2_scheme)
+                              ) -> TokenData:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -59,10 +65,11 @@ async def validate_token_data(security_scopes: SecurityScopes, token__: str = De
     except JWTError as exc:
         raise credentials_exception from exc
 
-    return await validate_token(token__, payload, credentials_exception, security_scopes)
+    return await validate_token(token__, session, payload, credentials_exception, security_scopes)
 
 
-async def validate_refresh_token_data(token__: str = Depends(oauth2_scheme)) -> TokenData:
+async def validate_refresh_token_data(token__: str = Depends(oauth2_scheme),
+                                      session=Depends(get_session)) -> TokenData:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -74,36 +81,28 @@ async def validate_refresh_token_data(token__: str = Depends(oauth2_scheme)) -> 
     except JWTError as exc:
         raise credentials_exception from exc
 
-    return await validate_token(token__, payload, credentials_exception)
+    return await validate_token(token__, session, payload, credentials_exception)
 
 
-async def validate_token(token__, payload, credentials_exception, security_scopes=None):
+async def validate_token(token__,
+                         session,
+                         payload,
+                         credentials_exception,
+                         security_scopes=None):
     if security_scopes:
         # validate Scopes
         if not all(scope in payload['scopes'] for scope in security_scopes.scopes):
             raise credentials_exception
 
-    # # validate against db
-    # try:
-    #     dbuser = DBUser.objects.get(email=payload['email'])
-    # except DoesNotExist as exc:
-    #     raise credentials_exception from exc
-    #
-    # if security_scopes:
-    #     if set(dbuser.scopes) != set(payload['scopes']):
-    #         raise HTTPException(
-    #             status_code=status.HTTP_403_FORBIDDEN,
-    #             detail="insufficient privileges",
-    #             headers={"WWW-Authenticate": f'Bearer token="{token__}"'},
-    #         )
-    #
-    # if payload['token_title'] == TokenType.REFRESH:
-    #     if not verify_hashed(token__, dbuser.refresh_token):
-    #         raise credentials_exception
-    #
-    # if payload['token_title'] == TokenType.ACCESS:
-    #     if not verify_hashed(token__, dbuser.access_token):
-    #         raise credentials_exception
+    _user = await get_db_user(session=session, email=payload['email'])
+
+    if security_scopes:
+        if set(_user.scopes) != set(payload['scopes']):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="insufficient privileges",
+                headers={"WWW-Authenticate": f'Bearer token="{token__}"'},
+            )
 
     return TokenData(user=User(**payload), exp=payload['exp'])
 
@@ -130,6 +129,5 @@ def get_logger(bt: BackgroundTasks,
                context_id: str = Depends(get_context)):
     return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
 
-
-if __name__ == '__main__':
-    print(get_hash('alex123'))
+# if __name__ == '__main__':
+#     print(get_hash('alex123'))

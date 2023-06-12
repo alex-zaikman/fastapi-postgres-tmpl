@@ -5,7 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f16bdf1f-e01a-407f-8ce5-6f647133b8ad" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.coveragerc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.pylintrc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/models/users.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/schema/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/init.sql" beforeDir="false" afterPath="$PROJECT_DIR$/db/init.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/api.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/api.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/auth.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/auth.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/token.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/schema.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/schema/users.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,33 +48,36 @@
     <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;/Users/alexanderzaikman/repos/fastapi-postgres-tmpl/src&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "/Users/alexanderzaikman/repos/fastapi-postgres-tmpl",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/schema" />
+      <recent name="$PROJECT_DIR$/src/models" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.auth">
+  <component name="RunManager" selected="Python.api">
     <configuration name="api" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="fastapi-postgres-tmpl" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -109,8 +124,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.auth" />
         <item itemvalue="Python.api" />
+        <item itemvalue="Python.auth" />
       </list>
     </recent_temporary>
   </component>
@@ -126,7 +141,7 @@
       <workItem from="1686409447876" duration="2231000" />
       <workItem from="1686470473991" duration="4365000" />
       <workItem from="1686482147047" duration="7702000" />
-      <workItem from="1686554339617" duration="607000" />
+      <workItem from="1686554339617" duration="3408000" />
     </task>
     <servers />
   </component>
@@ -139,13 +154,13 @@
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/src/auth.py</url>
           <line>107</line>
-          <option name="timeStamp" value="12" />
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/fastapi_postgres_tmpl$api.coverage" NAME="api Coverage Results" MODIFIED="1686551298249" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
+    <SUITE FILE_PATH="coverage/fastapi_postgres_tmpl$api.coverage" NAME="api Coverage Results" MODIFIED="1686558958673" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
     <SUITE FILE_PATH="coverage/fastapi_postgres_tmpl$auth.coverage" NAME="auth Coverage Results" MODIFIED="1686552009915" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src" />
   </component>
 </project>

@@ -9,10 +9,13 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from src.auth import validate_token_data, verify_hashed, create_refresh_token, create_access_token, get_hash
+from src.auth import validate_token_data, verify_hashed, create_refresh_token, create_access_token, get_hash, \
+    validate_refresh_token_data
 from src.database import engine, Base, get_session
-from src.models import UserBase, TokenData, Token, Scope
-from src.schema import users
+
+from src.models.token import TokenData, Scope, Token
+from src.models.users import User, UserBase
+from src.schema.users import users, get_db_user
 
 logger = logging.getLogger("api")
 app = FastAPI(title="Demo app.", version='1.0.0', description="FastAPI and postgres demo.")
@@ -70,8 +73,27 @@ async def list_users(session=Depends(get_session),
     return result.all()
 
 
+@app.post('/refresh', response_model=Token)
+def refresh(bt: BackgroundTasks, session=Depends(get_session),
+            token: TokenData = Security(validate_refresh_token_data),  # pylint: disable=unused-argument
+            ):
+    bt.add_task(logger.info, f'Getting token and refresh for {token.user.email}')
+
+    _user = await get_db_user(session=session, email=token.user.email)
+
+    refresh_token = create_refresh_token(data=User.from_orm(_user).dict())
+    access_token = create_access_token(data=User.from_orm(_user).dict())
+
+    bt.add_task(logger.info, f'Login succeeded for {token.user.email}')
+
+    return {"access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer"}
+
+
 @app.post('/token', response_model=Token)
 async def get_token(bt: BackgroundTasks,
+                    session=Depends(get_session),
                     form_data: OAuth2PasswordRequestForm = Depends()):
     bt.add_task(logger.info, f'Getting token for {form_data.username}')
 
@@ -79,25 +101,22 @@ async def get_token(bt: BackgroundTasks,
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect email or password",
         headers={"WWW-Authenticate": "Bearer"})
-    try:
-        dbuser = DBUser.objects.get(email=form_data.username.lower())
-    except DoesNotExist:
-        bt.add_task(logger.warning, f'Illegal user  {form_data.username}')
-        raise exception  # pylint: disable=raise-missing-from
 
-    if not verify_hashed(plain=form_data.password, hashed=dbuser.password):
+    _user = await get_db_user(session=session, email=form_data.username)
+
+    if not verify_hashed(plain=form_data.password, hashed=_user.password):
         bt.add_task(logger.warning,
                     f'Illegal password for {form_data.username}')
         raise exception
 
-    refresh_token = create_refresh_token(data=User.from_orm(dbuser).dict())
-    access_token = create_access_token(data=User.from_orm(dbuser).dict())
-    dbuser.refresh_token = get_hash(refresh_token)
-    dbuser.access_token = get_hash(access_token)
-    dbuser.save()
+    refresh_token = create_refresh_token(data=User.from_orm(_user).dict())
+    access_token = create_access_token(data=User.from_orm(_user).dict())
 
     bt.add_task(logger.info, f'Login succeeded for {form_data.username}')
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
+    return {"access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "bearer"}
 
 
 if __name__ == '__main__':

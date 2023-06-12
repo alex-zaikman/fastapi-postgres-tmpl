@@ -15,3 +15,10 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("password", sqlalchemy.String),
     sqlalchemy.Column("scopes", sqlalchemy.ARRAY(sqlalchemy.String)),
 )
+
+
+async def get_db_user(session, email):
+    query = users.select().where(users.c.email == email.lower())
+    _user = await session.execute(query)
+    _user = _user.first()
+    return _user

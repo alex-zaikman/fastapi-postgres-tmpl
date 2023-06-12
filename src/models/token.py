@@ -1,7 +1,8 @@
 from enum import Enum
-from typing import List
 
 from pydantic import BaseModel, Field
+
+from src.models.users import User
 
 
 class Scope(str, Enum):
@@ -19,22 +20,6 @@ class Token(BaseModel):
     access_token: str = Field(...)
     refresh_token: str = Field(...)
     token_type: str = Field(...)
-
-
-class UserBase(BaseModel):
-    email: str = Field(...)
-    id: int = Field(...)
-    scopes: List[str] = Field(...)
-
-    class Config:
-        orm_mode = True
-
-
-class User(UserBase):
-    password: str = Field(...)
-
-    class Config:
-        orm_mode = True
 
 
 class TokenData(BaseModel):
