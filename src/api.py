@@ -74,7 +74,7 @@ async def list_users(session=Depends(get_session),
 
 
 @app.post('/refresh', response_model=Token)
-def refresh(bt: BackgroundTasks, session=Depends(get_session),
+async def refresh(bt: BackgroundTasks, session=Depends(get_session),
             token: TokenData = Security(validate_refresh_token_data),  # pylint: disable=unused-argument
             ):
     bt.add_task(logger.info, f'Getting token and refresh for {token.user.email}')
