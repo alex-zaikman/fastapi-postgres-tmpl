@@ -129,5 +129,5 @@ def get_logger(bt: BackgroundTasks,
                context_id: str = Depends(get_context)):
     return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
 
-# if __name__ == '__main__':
-#     print(get_hash('alex123'))
+if __name__ == '__main__':
+    print(get_hash('admin123'))
