@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from src.auth import validate_token_data, verify_hashed, create_refresh_token, create_access_token, get_hash
 from src.database import engine, Base, get_session
-from src.models import UserBase, TokenData, Token
+from src.models import UserBase, TokenData, Token, Scope
 from src.schema import users
 
 logger = logging.getLogger("api")
@@ -64,7 +64,7 @@ async def redirect_root():  # pragma: no cover
 
 @app.get("/user/list", response_model=List[UserBase])
 async def list_users(session=Depends(get_session),
-                     token: TokenData = Security(validate_token_data, scopes=[])):
+                     token: TokenData = Security(validate_token_data, scopes=[Scope.USER])):
     query = users.select()
     result = await session.execute(query)
     return result.all()
