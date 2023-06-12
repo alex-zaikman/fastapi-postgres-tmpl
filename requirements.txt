@@ -8,6 +8,6 @@ fastapi-jwt-auth[asymmetric]
 python-multipart
 certifi
 python-dateutil
-# psycopg2-binary
+pylint
 asyncpg
 sqlalchemy[asyncio]

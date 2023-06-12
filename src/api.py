@@ -4,15 +4,14 @@ from typing import List
 
 import uvicorn
 from fastapi import FastAPI, Depends, Request, status, Response, Security, BackgroundTasks, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse
-from fastapi.middleware.cors import CORSMiddleware
 
-from src.auth import validate_token_data, verify_hashed, create_refresh_token, create_access_token, get_hash, \
-    validate_refresh_token_data
+from src.auth import validate_token_data, verify_hashed
+from src.auth import create_refresh_token, create_access_token, validate_refresh_token_data
 from src.database import engine, Base, get_session
-
 from src.models.token import TokenData, Scope, Token
 from src.models.users import User, UserBase
 from src.schema.users import users, get_db_user
@@ -22,6 +21,7 @@ app = FastAPI(title="Demo app.", version='1.0.0', description="FastAPI and postg
 
 
 class TimeMiddleware(BaseHTTPMiddleware):
+    """This middleware adds "X-Process-Time" header with server code execution time."""
 
     async def dispatch(self, request: Request, call_next):
         start_time = time.time()
@@ -39,12 +39,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
-    expose_headers=["*"]
+    expose_headers=["X-Process-Time"]
 )
 
 
 @app.on_event("startup")
 async def startup():
+    """Alchemy create all on server startup"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
@@ -54,8 +55,8 @@ async def startup():
 #     pass
 
 @app.get("/ping")
-async def ping():
-    logger.debug("ping")
+async def ping(bt: BackgroundTasks):
+    bt.add_task(logger.debug, "ping")
     return Response(status_code=status.HTTP_200_OK)
 
 
@@ -67,7 +68,7 @@ async def redirect_root():  # pragma: no cover
 
 @app.get("/user/list", response_model=List[UserBase])
 async def list_users(session=Depends(get_session),
-                     token: TokenData = Security(validate_token_data, scopes=[Scope.USER])):
+                     token: TokenData = Security(validate_token_data, scopes=[Scope.USER])):  # pylint: disable=unused-argument
     query = users.select()
     result = await session.execute(query)
     return result.all()
@@ -75,8 +76,8 @@ async def list_users(session=Depends(get_session),
 
 @app.post('/refresh', response_model=Token)
 async def refresh(bt: BackgroundTasks, session=Depends(get_session),
-            token: TokenData = Security(validate_refresh_token_data),  # pylint: disable=unused-argument
-            ):
+                  token: TokenData = Security(validate_refresh_token_data),
+                  ):
     bt.add_task(logger.info, f'Getting token and refresh for {token.user.email}')
 
     _user = await get_db_user(session=session, email=token.user.email)
