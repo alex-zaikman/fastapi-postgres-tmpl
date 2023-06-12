@@ -1,0 +1,1 @@
+# FastAPI with auth and integration with Postgresql.
