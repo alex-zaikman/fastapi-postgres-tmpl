@@ -13,5 +13,5 @@ users = sqlalchemy.Table(
                       server_default=text("NEXT VALUE FOR user_id_seq")),
     sqlalchemy.Column("email", sqlalchemy.String),
     sqlalchemy.Column("password", sqlalchemy.String),
+    sqlalchemy.Column("scopes", sqlalchemy.ARRAY(sqlalchemy.String)),
 )
-
