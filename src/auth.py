@@ -91,7 +91,7 @@ async def validate_token(token__,
                          security_scopes=None):
     if security_scopes:
         # validate Scopes
-        if not all(scope in payload['scopes'] for scope in security_scopes.scopes):
+        if not set(payload['scopes']).intersection(security_scopes.scopes):
             raise credentials_exception
 
     _user = await get_db_user(session=session, email=payload['email'])

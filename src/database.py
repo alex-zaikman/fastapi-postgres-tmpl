@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 
+from sqlalchemy import MetaData
 from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
@@ -31,4 +32,11 @@ async_session = sessionmaker(
 
 async def get_session() -> AsyncSession:
     async with async_session() as session:
-        yield session
+        try:
+            yield session
+        except:
+            await session.rollback()
+        else:
+            await session.commit()
+        finally:
+            await session.close()

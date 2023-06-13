@@ -1,6 +1,5 @@
 import logging
 import time
-from typing import List
 
 import uvicorn
 from fastapi import FastAPI, Depends, Request, status, Response, Security, BackgroundTasks, HTTPException
@@ -9,15 +8,18 @@ from fastapi.security import OAuth2PasswordRequestForm
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import RedirectResponse
 
-from src.auth import validate_token_data, verify_hashed
 from src.auth import create_refresh_token, create_access_token, validate_refresh_token_data
+from src.auth import verify_hashed
 from src.database import engine, Base, get_session
-from src.models.token import TokenData, Scope, Token
-from src.models.users import User, UserBase
-from src.schema.users import users, get_db_user
+from src.endpoints import user_api
+from src.models.token import TokenData, Token
+from src.models.users import User
+from src.schema.users import get_db_user
 
 logger = logging.getLogger("api")
 app = FastAPI(title="Demo app.", version='1.0.0', description="FastAPI and postgres demo.")
+
+app.include_router(user_api.router)
 
 
 class TimeMiddleware(BaseHTTPMiddleware):
@@ -66,14 +68,6 @@ async def redirect_root():  # pragma: no cover
     return RedirectResponse("/docs")
 
 
-@app.get("/user/list", response_model=List[UserBase])
-async def list_users(session=Depends(get_session),
-                     token: TokenData = Security(validate_token_data, scopes=[Scope.USER])):  # pylint: disable=unused-argument
-    query = users.select()
-    result = await session.execute(query)
-    return result.all()
-
-
 @app.post('/refresh', response_model=Token)
 async def refresh(bt: BackgroundTasks, session=Depends(get_session),
                   token: TokenData = Security(validate_refresh_token_data),
@@ -105,7 +99,7 @@ async def get_token(bt: BackgroundTasks,
 
     _user = await get_db_user(session=session, email=form_data.username)
 
-    if not verify_hashed(plain=form_data.password, hashed=_user.password):
+    if not _user or not verify_hashed(plain=form_data.password, hashed=_user.password):
         bt.add_task(logger.warning,
                     f'Illegal password for {form_data.username}')
         raise exception

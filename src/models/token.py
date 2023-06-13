@@ -5,11 +5,6 @@ from pydantic import BaseModel, Field
 from src.models.users import User
 
 
-class Scope(str, Enum):
-    ADMIN = 'ADMIN'
-    USER = 'USER'
-
-
 class TokenType(str, Enum):
     ACCESS = 'ACCESS'
     REFRESH = 'REFRESH'
