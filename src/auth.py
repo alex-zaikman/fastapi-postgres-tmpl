@@ -11,10 +11,10 @@ from jose import JWTError, jwt
 from jose.constants import ALGORITHMS
 from passlib.context import CryptContext
 
-from src.database import get_session
-from src.models.token import TokenData, TokenType
-from src.models.users import User
-from src.schema.users import get_db_user
+from database import get_session
+from models.token import TokenData, TokenType
+from models.users import User
+from schema.users import get_db_user
 
 # Auth conf
 API_ALGORITHM = os.environ.get("API_ALGORITHM", ALGORITHMS.HS256)

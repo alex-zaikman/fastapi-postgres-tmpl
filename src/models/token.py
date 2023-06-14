@@ -2,7 +2,7 @@ from enum import Enum
 
 from pydantic import BaseModel, Field
 
-from src.models.users import User
+from models.users import User
 
 
 class TokenType(str, Enum):

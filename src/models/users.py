@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from src.models.scopes import Scope
+from models.scopes import Scope
 
 
 class _UserBase(BaseModel):

@@ -1,6 +1,6 @@
 import sqlalchemy
 
-from src.database import Base
+from database import Base
 
 USER_ID_SEQ = sqlalchemy.Sequence('user_id_seq', start=1, increment=1)
 

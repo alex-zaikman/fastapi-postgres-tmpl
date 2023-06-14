@@ -6,14 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import RedirectResponse
 
-from src.auth import create_refresh_token, create_access_token, validate_refresh_token_data
-from src.auth import verify_hashed
-from src.database import engine, Base, get_session
-from src.endpoints import user_api
-from src.middleware import ContextIdMiddleware, TimeMiddleware
-from src.models.token import TokenData, Token
-from src.models.users import User
-from src.schema.users import get_db_user
+from auth import create_refresh_token, create_access_token, validate_refresh_token_data
+from auth import verify_hashed
+from database import engine, Base, get_session
+from endpoints import user_api
+from middleware import ContextIdMiddleware, TimeMiddleware
+from models.token import TokenData, Token
+from models.users import User
+from schema.users import get_db_user
 
 logger = logging.getLogger("api")
 app = FastAPI(title="Demo app.", version='1.0.0', description="FastAPI and postgres demo.")

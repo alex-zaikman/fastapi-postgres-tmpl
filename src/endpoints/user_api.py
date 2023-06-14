@@ -2,12 +2,12 @@ from typing import List
 
 from fastapi import APIRouter, Depends, Security, Body, status
 
-from src.auth import validate_token_data, get_hash
-from src.database import get_session
-from src.models.scopes import Scope
-from src.models.token import TokenData
-from src.models.users import NewUser, DisplayUser
-from src.schema.users import users
+from auth import validate_token_data, get_hash
+from database import get_session
+from models.scopes import Scope
+from models.token import TokenData
+from models.users import NewUser, DisplayUser
+from schema.users import users
 
 router = APIRouter(tags=["User"], prefix="/user")
 
