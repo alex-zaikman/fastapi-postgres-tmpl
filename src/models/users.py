@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 from src.models.scopes import Scope
 
 
-class UserBase(BaseModel):
+class _UserBase(BaseModel):
     email: str = Field(...)
     scopes: List[Scope] = Field(...)
 
