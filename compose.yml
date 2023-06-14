@@ -34,8 +34,6 @@ services:
       DB_NAME: postgres
     links:
       - db
-    volumes:
-      - './:/src'
 volumes:
   db:
     driver: local
