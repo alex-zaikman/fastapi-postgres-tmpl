@@ -1,14 +1,14 @@
+create sequence public.user_id_seq;
 
-CREATE TABLE users (
-  id SERIAL PRIMARY KEY,
-  email TEXT NOT NULL UNIQUE,
-  password TEXT NOT NULL,
-  scopes TEXT[] NOT NULL
+alter sequence public.user_id_seq owner to postgres;
+
+create table public.users (
+  id integer primary key not null,
+  email character varying,
+  password character varying,
+  scopes character varying[]
 );
 
-
-GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO postgres;
-
-INSERT INTO users (email, password, scopes)
-VALUES ('alex@gmail.com', '$2b$12$anLRbqyOV9YvC49qggeDHOEUCwZDZlsPhBelD/iaEn4uVUhUfZGmC', ARRAY ['USER']),
-       ('admin@gmail.com', '$2b$12$S9ES4ywuyPkYfzwTMwmC3.Pqs82FCJ.iqiAASzcWul8qK4LG94ZD6', ARRAY ['ADMIN']);
+INSERT INTO users (id, email, password, scopes)
+VALUES (nextval('user_id_seq'),'alex@gmail.com', '$2b$12$anLRbqyOV9YvC49qggeDHOEUCwZDZlsPhBelD/iaEn4uVUhUfZGmC', ARRAY ['USER']),
+       (nextval('user_id_seq'),'admin@gmail.com', '$2b$12$S9ES4ywuyPkYfzwTMwmC3.Pqs82FCJ.iqiAASzcWul8qK4LG94ZD6', ARRAY ['ADMIN']);
