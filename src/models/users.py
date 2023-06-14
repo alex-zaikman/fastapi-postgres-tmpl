@@ -13,14 +13,14 @@ class _UserBase(BaseModel):
         orm_mode = True
 
 
-class NewUser(UserBase):
+class NewUser(_UserBase):
     password: str = Field(...)
 
     class Config:
         orm_mode = True
 
 
-class DisplayUser(UserBase):
+class DisplayUser(_UserBase):
     id: int = Field(...)
 
     class Config:
