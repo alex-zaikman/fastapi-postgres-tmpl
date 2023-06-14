@@ -1,5 +1,4 @@
 import sqlalchemy
-from sqlalchemy import text
 
 from src.database import Base
 

@@ -14,8 +14,9 @@ router = APIRouter(tags=["User"], prefix="/user")
 
 @router.get("/", response_model=List[DisplayUser], description='List users.')
 async def list_users(session=Depends(get_session),
-                     token: TokenData = Security(validate_token_data,
-                                                 scopes=[Scope.ADMIN, Scope.USER])):  # pylint: disable=unused-argument
+                     token: TokenData = Security(validate_token_data,  # pylint: disable=unused-argument
+                                                 scopes=[Scope.ADMIN, Scope.USER])
+                     ):
     query = users.select()
     result = await session.execute(query)
     return result.all()

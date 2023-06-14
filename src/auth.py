@@ -1,18 +1,15 @@
+import hashlib
 import logging
 import os
 import string
-import hashlib
-from random import choice
 from datetime import datetime, timedelta
+from random import choice
 
-from passlib.context import CryptContext
-from starlette.background import BackgroundTasks
-
+from fastapi import HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer, SecurityScopes
 from jose import JWTError, jwt
 from jose.constants import ALGORITHMS
-
-from fastapi import HTTPException, Depends, status, Request
-from fastapi.security import OAuth2PasswordBearer, SecurityScopes
+from passlib.context import CryptContext
 
 from src.database import get_session
 from src.models.token import TokenData, TokenType
@@ -120,14 +117,10 @@ def create_refresh_token(data: dict):
     encoded_jwt = jwt.encode({"exp": expire, **data}, API_REFRESH_SECRET_KEY, algorithm=API_ALGORITHM)
     return encoded_jwt
 
+# def get_logger(bt: BackgroundTasks,
+#                context_id: str = Depends(get_context)):
+#     return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
 
-def get_context(request: Request) -> str:
-    return request.state.context_id
-
-
-def get_logger(bt: BackgroundTasks,
-               context_id: str = Depends(get_context)):
-    return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
 
 if __name__ == '__main__':
     print(get_hash('admin123'))
