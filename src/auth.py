@@ -11,7 +11,7 @@ from jose import JWTError, jwt
 from jose.constants import ALGORITHMS
 from passlib.context import CryptContext
 
-from database import get_session
+from database import DataBase
 from models.token import TokenData, TokenType
 from models.users import User
 from schema.users import get_db_user
@@ -47,7 +47,7 @@ def get_hash(str_to_hash: str) -> str:
 
 
 async def validate_token_data(security_scopes: SecurityScopes,
-                              session=Depends(get_session),
+                              session=Depends(DataBase().get_session),
                               token__: str = Depends(oauth2_scheme)
                               ) -> TokenData:
     credentials_exception = HTTPException(
@@ -66,7 +66,7 @@ async def validate_token_data(security_scopes: SecurityScopes,
 
 
 async def validate_refresh_token_data(token__: str = Depends(oauth2_scheme),
-                                      session=Depends(get_session)) -> TokenData:
+                                      session=Depends(DataBase().get_session)) -> TokenData:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

@@ -1,12 +1,12 @@
 import sqlalchemy
 
-from database import Base
+from database import DataBase
 
 USER_ID_SEQ = sqlalchemy.Sequence('user_id_seq', start=1, increment=1)
 
 users = sqlalchemy.Table(
     "users",
-    Base.metadata,
+    DataBase.Base.metadata,
     sqlalchemy.Column("id",
                       sqlalchemy.Integer, USER_ID_SEQ,
                       primary_key=True

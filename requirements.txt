@@ -9,5 +9,6 @@ python-multipart
 certifi
 python-dateutil
 pylint
+psycopg-binary
 asyncpg
 sqlalchemy[asyncio]

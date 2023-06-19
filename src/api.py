@@ -8,7 +8,7 @@ from starlette.responses import RedirectResponse
 
 from auth import create_refresh_token, create_access_token, validate_refresh_token_data
 from auth import verify_hashed
-from database import engine, Base, get_session
+from database import DataBase
 from endpoints import user_api
 from middleware import ContextIdMiddleware, TimeMiddleware
 from models.token import TokenData, Token
@@ -34,14 +34,13 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    """Alchemy create all on server startup"""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    DataBase()  # warmup db connection
 
 
 # @app.on_event("shutdown")
 # def shutdown_db_client():
 #     pass
+
 
 @app.get("/ping")
 async def ping(bt: BackgroundTasks,
@@ -57,7 +56,7 @@ async def redirect_root():  # pragma: no cover
 
 
 @app.post('/refresh', tags=['Auth'], response_model=Token)
-async def refresh(bt: BackgroundTasks, session=Depends(get_session),
+async def refresh(bt: BackgroundTasks, session=Depends(DataBase().get_session),
                   context_id: str = Depends(ContextIdMiddleware.get_context),
                   token: TokenData = Security(validate_refresh_token_data),
                   ):
@@ -80,7 +79,7 @@ async def refresh(bt: BackgroundTasks, session=Depends(get_session),
 @app.post('/token', tags=['Auth'], response_model=Token)
 async def get_token(bt: BackgroundTasks,
                     context_id: str = Depends(ContextIdMiddleware.get_context),
-                    session=Depends(get_session),
+                    session=Depends(DataBase().get_session),
                     form_data: OAuth2PasswordRequestForm = Depends()):
     bt.add_task(logger.info, f'Getting token for {form_data.username}',
                 extra={"context_id": context_id})
