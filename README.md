@@ -15,13 +15,14 @@ async def foo(context_id: str = Depends(ContextIdMiddleware.get_context)):
 ```
 
 ```python
-# Use in with logg
+# Use with logg
 logger = logging.getLogger("api")
 bt.add_task(logger.info, f'Informative log message.', extra={"context_id": context_id})
 ```
 
 ### TimeMiddleware
 This middleware adds a ```X-Process-Time``` header to the response indicating server execution time, usfull for performance visabilty.
+
 ## HOTO:
 Start all services
 ```bash
