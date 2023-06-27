@@ -1,5 +1,3 @@
-from sqlalchemy import text
-
 from schema.users import users
 from tests.base import TestBase
 
