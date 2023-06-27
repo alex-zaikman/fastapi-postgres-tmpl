@@ -13,7 +13,7 @@ from endpoints import user_api
 from middleware import ContextIdMiddleware, TimeMiddleware
 from models.token import TokenData, Token
 from models.users import User
-from schema.users import get_db_user, users
+from schema.users import get_db_user
 
 logger = logging.getLogger("api")
 app = FastAPI(title="Demo app.", version='1.0.0', description="FastAPI and postgres demo.")

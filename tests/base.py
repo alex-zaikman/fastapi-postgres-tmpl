@@ -16,6 +16,8 @@ class TestBase(unittest.IsolatedAsyncioTestCase):
         os.environ.setdefault('DB_USER', dsn['user'])
         os.environ.setdefault('DB_PASSWORD', '')
         os.environ.setdefault('DB_NAME', 'postgres')
+        os.environ.setdefault('DB_NULL_POOL', 'true')
+        os.environ.setdefault('DB_ECHO', 'true')
         self.db = DataBase()
 
     async def init_db(self):
