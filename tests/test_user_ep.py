@@ -1,20 +1,22 @@
+from fastapi import status
 from tests.api_base import TestAPIBase
 
 
 class TestUserEP(TestAPIBase):
 
     async def test_crud_users(self):
-
         headers = self.login('admin@gmail.com', 'admin123')
-        self.client.post(
+        response = self.client.post(
             url='/user',
             headers=headers.auth,
             json={
-                "email": "string",
+                "email": "test@test.com",
                 "scopes": [
                     "ADMIN"
                 ],
-                "password": "string"
+                "password": "test123"
             }
         )
-        sss = 21
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        res = self.login('test@test.com', 'test123')
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
