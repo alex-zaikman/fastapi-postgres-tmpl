@@ -14,6 +14,7 @@ users = sqlalchemy.Table(
     sqlalchemy.Column("email", sqlalchemy.String),
     sqlalchemy.Column("password", sqlalchemy.String),
     sqlalchemy.Column("scopes", sqlalchemy.ARRAY(sqlalchemy.String)),
+    schema='public'
 )
 
 

@@ -13,7 +13,7 @@ from endpoints import user_api
 from middleware import ContextIdMiddleware, TimeMiddleware
 from models.token import TokenData, Token
 from models.users import User
-from schema.users import get_db_user
+from schema.users import get_db_user, users
 
 logger = logging.getLogger("api")
 app = FastAPI(title="Demo app.", version='1.0.0', description="FastAPI and postgres demo.")
@@ -34,7 +34,9 @@ app.add_middleware(
 
 @app.on_event("startup")
 async def startup():
-    DataBase()  # warmup db connection
+    db = DataBase()  # warmup db connection
+    async with db.engine.begin() as conn:
+        await conn.run_sync(db.Base.metadata.create_all)
 
 
 # @app.on_event("shutdown")

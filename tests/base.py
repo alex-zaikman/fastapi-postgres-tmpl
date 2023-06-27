@@ -1,41 +1,29 @@
+import os
 import unittest
-import testing.postgresql
 
-from fastapi.openapi.models import Response
-from starlette.testclient import TestClient
+import testing.postgresql
+from sqlalchemy import text
+
 from database import DataBase
 
 
-class AuthHeader:
-    def __init__(self, response: Response):
-        self._tokens = response.json()
-        self.status_code = response.status_code
+class TestBase(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        self.postgresql = testing.postgresql.Postgresql()
+        dsn = self.postgresql.dsn()
+        os.environ.setdefault('DB_HOST', dsn['host'])
+        os.environ.setdefault('DB_PORT', str(dsn['port']))
+        os.environ.setdefault('DB_USER', dsn['user'])
+        os.environ.setdefault('DB_PASSWORD', '')
+        os.environ.setdefault('DB_NAME', 'postgres')
+        self.db = DataBase()
 
-    @property
-    def auth(self):
-        return {"Authorization": f"Bearer {self._tokens.get('access_token')}"}
+    async def init_db(self):
+        await super().asyncSetUp()
+        session = await anext(self.db.get_session())
+        with open('../db/init.sql', 'r') as fp:
+            [(await session.execute(text(statment.strip()))) for statment in fp.read().split(';') if statment.strip()]
+            await session.commit()
 
-    @property
-    def refresh(self):
-        return {"Authorization": f"Bearer {self._tokens.get('refresh_token')}"}
-
-
-class TestBase(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        cls.postgresql = testing.postgresql.Postgresql()
-        cls.postgresql.initialize()
-        DataBase(sqlalchemy_database_url=cls.postgresql.url().replace('postgresql:', 'postgresql+asyncpg:'))
-
-
-    def setUp(self) -> None:
-        from api import app
-        self.client = TestClient(app)
-
-    def login(self, email, password) -> AuthHeader:
-        response = self.client.post("/token", data={"username": email, "password": password})
-        return AuthHeader(response)
-
-    def tearDown(self):
+    async def asyncTearDown(self) -> None:
         self.postgresql.stop()

@@ -1,9 +1,10 @@
-from tests.base import TestBase
+from tests.api_base import TestAPIBase
 
 
-class TestUserEP(TestBase):
+class TestUserEP(TestAPIBase):
 
-    def test_crud_users(self):
+    async def test_crud_users(self):
+
         headers = self.login('admin@gmail.com', 'admin123')
         self.client.post(
             url='/user',
@@ -16,3 +17,4 @@ class TestUserEP(TestBase):
                 "password": "string"
             }
         )
+        sss = 21
