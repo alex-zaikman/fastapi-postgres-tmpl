@@ -35,11 +35,11 @@ This middleware adds a ```X-Process-Time``` header to the response indicating se
 
 ## DB API environment variables
 
-* ```API_ALGORITHM``` : JWT token algorithm  ```default = HS256```
-* ```API_ACCESS_TOKEN_EXPIRE_MINUTES``` : Access JWT token expiration time (minutes) ```default = 15```
-* ```API_REFRESH_TOKEN_EXPIRE_DAYS``` : Refresh JWT token expiration time (minutes) ```default = 30```
-* ```API_SECRET_KEY``` : Access secret key ```default = random```
-* ```API_REFRESH_SECRET_KEY``` : Refresh secret key ```default = random```
+* ```API_ALGORITHM```: JWT token algorithm  ```default = HS256```
+* ```API_ACCESS_TOKEN_EXPIRE_MINUTES```: Access JWT token expiration time (minutes) ```default = 15```
+* ```API_REFRESH_TOKEN_EXPIRE_DAYS```: Refresh JWT token expiration time (minutes) ```default = 30```
+* ```API_SECRET_KEY```: Access secret key ```default = random```
+* ```API_REFRESH_SECRET_KEY```: Refresh secret key ```default = random```
 
 ## HOTO:
 Start all services
