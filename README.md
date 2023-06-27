@@ -23,6 +23,24 @@ bt.add_task(logger.info, f'Informative log message.', extra={"context_id": conte
 ### TimeMiddleware
 This middleware adds a ```X-Process-Time``` header to the response indicating server execution time, usfull for performance visabilty.
 
+## DB environment variables
+
+* ```DB_HOST```:   Host name
+* ```DB_PORT```:  Port
+* ```DB_USER```:  Username name
+* ```DB_PASSWORD```:  Password
+* ```DB_NAME```: Database name
+* ```DB_NULL_POOL```: If set will set to not use pool (Useful for unit testing to avoid ```different loop``` error. )
+* ```DB_ECHO```: If set will echo db messages
+
+## DB API environment variables
+
+* ```API_ALGORITHM``` : JWT token algorithm  ```default = HS256```
+* ```API_ACCESS_TOKEN_EXPIRE_MINUTES``` : Access JWT token expiration time (minutes) ```default = 15```
+* ```API_REFRESH_TOKEN_EXPIRE_DAYS``` : Refresh JWT token expiration time (minutes) ```default = 30```
+* ```API_SECRET_KEY``` : Access secret key ```default = random```
+* ```API_REFRESH_SECRET_KEY``` : Refresh secret key ```default = random```
+
 ## HOTO:
 Start all services
 ```bash
