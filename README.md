@@ -1,6 +1,27 @@
 # FastAPI with auth and integration with Postgresql.
 This template project can be used to jumpstart a REST API postgres backed project.
+It has stubs for testing and some usfull middleware.
+## Middleware
+### ContextIdMiddleware
+This middleware adds a ```X-Context-Id``` header to the response, if such a header present in the request it will send it back if not a new one will be generated.
+This id can be used a dependancy in the endpoints and used to achieve tracabilty in loggs.
+i.e.
 
+```python
+# Inject as Dependency
+@app.post('/foo', tags=['Example'])
+async def foo(context_id: str = Depends(ContextIdMiddleware.get_context)):
+ ...
+```
+
+```python
+# Use in with logg
+logger = logging.getLogger("api")
+bt.add_task(logger.info, f'Informative log message.', extra={"context_id": context_id})
+```
+
+### TimeMiddleware
+This middleware adds a ```X-Process-Time``` header to the response indicating server execution time, usfull for performance visabilty.
 ## HOTO:
 Start all services
 ```bash
