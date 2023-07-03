@@ -17,7 +17,7 @@ class DataBase(metaclass=SingletonMeta):
         self.engine = self._create_async_engine()
 
         self.async_session = sessionmaker(
-            self.engine, class_=AsyncSession, expire_on_commit=False
+            self.engine, class_=AsyncSession, expire_on_commit=False,
         )
 
     @staticmethod

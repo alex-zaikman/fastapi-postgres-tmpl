@@ -8,6 +8,7 @@ from database import DataBase
 
 
 class TestBase(unittest.IsolatedAsyncioTestCase):
+
     async def asyncSetUp(self):
         self.postgresql = testing.postgresql.Postgresql()  # pylint: disable=attribute-defined-outside-init
         dsn = self.postgresql.dsn()
@@ -16,7 +17,7 @@ class TestBase(unittest.IsolatedAsyncioTestCase):
         os.environ.setdefault('DB_USER', dsn['user'])
         os.environ.setdefault('DB_PASSWORD', '')
         os.environ.setdefault('DB_NAME', 'postgres')
-        # os.environ.setdefault('DB_NULL_POOL', 'true')
+        os.environ.setdefault('DB_NULL_POOL', 'true')
         os.environ.setdefault('DB_ECHO', 'true')
         self.db = DataBase()  # pylint: disable=attribute-defined-outside-init
 
@@ -24,8 +25,5 @@ class TestBase(unittest.IsolatedAsyncioTestCase):
         await super().asyncSetUp()
         session = await anext(self.db.get_session())
         with open('../db/init.sql', 'r') as fp:
-            _ = [(await session.execute(text(statment.strip()))) for statment in fp.read().split(';') if statment.strip()]
+            _ = [(await session.execute(text(statement.strip()))) for statement in fp.read().split(';') if statement.strip()]
             await session.commit()
-
-    async def asyncTearDown(self) -> None:
-        self.postgresql.stop()

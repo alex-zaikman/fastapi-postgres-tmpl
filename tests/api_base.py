@@ -25,6 +25,10 @@ class TestAPIBase(TestBase):
         from api import app
         self.client = TestClient(app)
 
+    async def asyncTearDown(self) -> None:
+        self.client.close()
+        await super().asyncTearDown()
+
     def login(self, email, password) -> AuthHeader:
         response = self.client.post("/token", data={"username": email, "password": password})
         return AuthHeader(response)
