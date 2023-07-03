@@ -41,7 +41,9 @@ async def startup():
 
 # @app.on_event("shutdown")
 # def shutdown_db_client():
-#     pass
+#     db = DataBase()
+#     db.async_session.close_all()
+#     db.engine.dispose()
 
 
 @app.get("/ping")

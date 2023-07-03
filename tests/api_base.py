@@ -1,6 +1,7 @@
 from fastapi.openapi.models import Response
 from fastapi.testclient import TestClient
 
+from database import DataBase
 from tests.base import TestBase
 
 

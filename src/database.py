@@ -16,9 +16,7 @@ class DataBase(metaclass=SingletonMeta):
 
         self.engine = self._create_async_engine()
 
-        self.async_session = sessionmaker(
-            self.engine, class_=AsyncSession, expire_on_commit=False,
-        )
+        self.async_session = sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
 
     @staticmethod
     def _create_async_engine():
@@ -44,6 +42,8 @@ class DataBase(metaclass=SingletonMeta):
                 except Exception as exc:  # pylint: disable=bare-except
                     await session.rollback()
                     raise exc
+                else:
+                    await session.commit()
 
     class Base(AsyncAttrs, DeclarativeBase):
         pass
