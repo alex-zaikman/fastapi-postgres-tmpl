@@ -44,6 +44,8 @@ class DataBase(metaclass=SingletonMeta):
                     raise exc
                 else:
                     await session.commit()
+                finally:
+                    await session.close()
 
     class Base(AsyncAttrs, DeclarativeBase):
         pass
