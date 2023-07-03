@@ -21,6 +21,12 @@ class TestBase(unittest.IsolatedAsyncioTestCase):
         os.environ.setdefault('DB_ECHO', 'true')
         self.db = DataBase()  # pylint: disable=attribute-defined-outside-init
 
+    async def asyncTearDown(self) -> None:
+        # self.db.async_session.close_all()
+        self.db.engine.dispose()
+        self.postgresql.terminate()
+
+
     async def init_db(self):
         await super().asyncSetUp()
         session = await anext(self.db.get_session())
