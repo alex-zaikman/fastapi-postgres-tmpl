@@ -25,13 +25,19 @@ services:
       db:
         condition: service_healthy
     ports:
-      - 8000:8000
+      - "8000:8000"
     environment:
       DB_HOST: db
       DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_NAME: postgres
+      API_REFRESH_SECRET_KEY: 07429b001dc20a68e3f97b895447d72a15280088bf84c5622e20da867b52716aeaf32ffd1e44ae5d6d8f98c9959082b8714ee6c8c3592b98524c0e123fcbf082
+      API_SECRET_KEY: 9c82f8568c03c7adbacf971bbf7dcad0e66bf715bc17d0b4c6e04e89415b4c48679b531405c56873b59f8d7c5e5d2f54acba9c3b36c7e52ddfaac4a2f8729184
+      API_REFRESH_TOKEN_EXPIRE_DAYS: 30
+      API_ACCESS_TOKEN_EXPIRE_MINUTES: 14
+      API_ALGORITHM: HS256
+
     links:
       - db
 volumes:
