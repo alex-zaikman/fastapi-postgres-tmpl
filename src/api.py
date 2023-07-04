@@ -94,7 +94,7 @@ async def get_token(bt: BackgroundTasks,
         headers={"WWW-Authenticate": "Bearer"})
 
     _user = await get_db_user(session=session, email=form_data.username)
-
+    # test
     if not _user or not verify_hashed(plain=form_data.password, hashed=_user.password):
         bt.add_task(logger.warning,
                     f'Illegal password for {form_data.username}',
