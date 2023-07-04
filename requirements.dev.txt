@@ -2,3 +2,4 @@ testing.postgresql
 pylint
 coverage
 time-machine
+psycopg
