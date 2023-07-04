@@ -88,18 +88,16 @@ async def get_token(bt: BackgroundTasks,
     bt.add_task(logger.info, f'Getting token for {form_data.username}',
                 extra={"context_id": context_id})
 
-    exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Incorrect email or password",
-        headers={"WWW-Authenticate": "Bearer"})
-
     _user = await get_db_user(session=session, email=form_data.username)
-    # test
+
     if not _user or not verify_hashed(plain=form_data.password, hashed=_user.password):
         bt.add_task(logger.warning,
                     f'Illegal password for {form_data.username}',
                     extra={"context_id": context_id})
-        raise exception
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"})
 
     refresh_token = create_refresh_token(data=User.from_orm(_user).dict())
     access_token = create_access_token(data=User.from_orm(_user).dict())
@@ -112,7 +110,7 @@ async def get_token(bt: BackgroundTasks,
             "token_type": "bearer"}
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     uvicorn.run("api:app",
                 host="0.0.0.0",
                 port=8001,

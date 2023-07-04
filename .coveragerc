@@ -12,7 +12,6 @@ command_line = -m unittest discover -s=./tests
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover
-    if __name__ == .__main__.:
 
 show_missing = True
 skip_empty = True

@@ -16,7 +16,7 @@ class DataBase(metaclass=SingletonMeta):
 
     @staticmethod
     def _create_async_engine(url):
-        if url is None:
+        if url is None:  # pragma: no cover
             db_host = os.environ.get('DB_HOST', default='localhost')
             db_port = os.environ.get('DB_PORT', default='5432')
             db_user = os.environ.get('DB_USER', default='postgres')

@@ -17,8 +17,7 @@ async def list_users(session=Depends(DataBase().get_session),
                      token: TokenData = Security(validate_token_data,  # pylint: disable=unused-argument
                                                  scopes=[Scope.ADMIN, Scope.USER])
                      ):
-    query = users.select()
-    result = await session.execute(query)
+    result = await session.execute(users.select())
     return result.all()
 
 

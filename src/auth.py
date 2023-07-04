@@ -89,13 +89,11 @@ async def validate_token(token__,
                          credentials_exception,
                          security_scopes=None):
     if security_scopes:
-        # validate Scopes
         if not set(payload['scopes']).intersection(security_scopes.scopes):
             raise credentials_exception
 
-    _user = await get_db_user(session=session, email=payload['email'])
+        _user = await get_db_user(session=session, email=payload['email'])
 
-    if security_scopes:
         if set(_user.scopes) != set(payload['scopes']):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
