@@ -1,15 +1,18 @@
 # .coveragerc to control coverage.py
 [run]
 branch = True
-source = .
+source =
+    ./src
+    ./tests
 
-command_line = -m unittest discover -s=.
+command_line = -m unittest discover -s=./tests
 
 [report]
 # Regexes for lines to exclude from consideration
 exclude_lines =
     # Have to re-enable the standard pragma
     pragma: no cover
+    if __name__ == .__main__.:
 
 show_missing = True
 skip_empty = True

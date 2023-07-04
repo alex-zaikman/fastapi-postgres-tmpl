@@ -1,7 +1,6 @@
 from fastapi.openapi.models import Response
 from fastapi.testclient import TestClient
 
-from database import DataBase
 from tests.base import TestBase
 
 
@@ -22,8 +21,8 @@ class AuthHeader:
 class TestAPIBase(TestBase):
     async def asyncSetUp(self):
         await super().asyncSetUp()
-        from api import app
-        self.client = TestClient(app)
+        from api import app  # pylint: disable=import-outside-toplevel
+        self.client = TestClient(app)  # pylint: disable=attribute-defined-outside-init
 
     async def asyncTearDown(self) -> None:
         self.client.close()

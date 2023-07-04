@@ -17,7 +17,7 @@ class _Postgresql(metaclass=SingletonMeta):
         conn = psycopg.connect(db.url())
         cur = conn.cursor()
 
-        with open('../db/init.sql', 'r') as fp:
+        with open(os.path.join(os.path.dirname(__file__), '../db/init.sql'), 'r', encoding="UTF-8") as fp:
             _ = [(cur.execute(statement.strip())) for statement in fp.read().split(';') if statement.strip()]
 
         conn.commit()
