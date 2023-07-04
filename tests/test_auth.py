@@ -13,7 +13,7 @@ class TestAuth(TestAPIBase):
 
     async def asyncSetUp(self):
         await super().asyncSetUp()
-        self.headers = self.login('admin@gmail.com', 'admin123')
+        self.headers = self.login('admin@gmail.com', 'admin123')  # pylint: disable=attribute-defined-outside-init
 
     async def test_auth(self):
         response = self.client.get(url='/user', headers=self.headers.auth)
@@ -22,7 +22,7 @@ class TestAuth(TestAPIBase):
         response = self.client.get(url='/user')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'no auth headers')
 
-        response = self.client.get(url='/user', headers={"Authorization": f"Bearer blasdfdfwerwewfer44r44fr44f4f4c4f4ff4f4"})
+        response = self.client.get(url='/user', headers={"Authorization": "Bearer blasdfdfwerwewfer44r44fr44f4f4c4f4ff4f4"})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, "bad auth headers")
 
     async def test_refresh(self):

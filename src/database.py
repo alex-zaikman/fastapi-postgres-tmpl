@@ -26,7 +26,7 @@ class DataBase(metaclass=SingletonMeta):
             db_name = os.environ.get('DB_NAME', default='postgres')
             url = f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
 
-        kwargs = dict(url=url)
+        kwargs = {'url': url}
         if os.environ.get('DB_NULL_POOL', default=None) is not None:
             kwargs.update(poolclass=NullPool)
         if os.environ.get('DB_ECHO', default=None) is not None:
@@ -43,10 +43,8 @@ class DataBase(metaclass=SingletonMeta):
                 except Exception as exc:  # pylint: disable=bare-except
                     await session.rollback()
                     raise exc
-                else:
-                    await session.commit()
-                # finally:
-                #     await session.close()
+
+                await session.commit()
 
     class Base(AsyncAttrs, DeclarativeBase):
         pass
