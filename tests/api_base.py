@@ -22,7 +22,6 @@ class AuthHeader:
 class TestAPIBase(TestBase):
     async def asyncSetUp(self):
         await super().asyncSetUp()
-        await self.init_db()
         from api import app
         self.client = TestClient(app)
 

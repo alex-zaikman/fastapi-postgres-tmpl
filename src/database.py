@@ -12,20 +12,21 @@ from singleton_meta import SingletonMeta
 
 class DataBase(metaclass=SingletonMeta):
 
-    def __init__(self):
-
-        self.engine = self._create_async_engine()
-
+    def __init__(self, url=None):
+        self.engine = self._create_async_engine(url)
         self.async_session = sessionmaker(self.engine, class_=AsyncSession, expire_on_commit=False)
 
     @staticmethod
-    def _create_async_engine():
-        db_host = os.environ.get('DB_HOST', default='localhost')
-        db_port = os.environ.get('DB_PORT', default='5432')
-        db_user = os.environ.get('DB_USER', default='postgres')
-        db_password = os.environ.get('DB_PASSWORD', default='postgres')
-        db_name = os.environ.get('DB_NAME', default='postgres')
-        kwargs = dict(url=f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}")
+    def _create_async_engine(url):
+        if url is None:
+            db_host = os.environ.get('DB_HOST', default='localhost')
+            db_port = os.environ.get('DB_PORT', default='5432')
+            db_user = os.environ.get('DB_USER', default='postgres')
+            db_password = os.environ.get('DB_PASSWORD', default='postgres')
+            db_name = os.environ.get('DB_NAME', default='postgres')
+            url = f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}"
+
+        kwargs = dict(url=url)
         if os.environ.get('DB_NULL_POOL', default=None) is not None:
             kwargs.update(poolclass=NullPool)
         if os.environ.get('DB_ECHO', default=None) is not None:
@@ -44,8 +45,8 @@ class DataBase(metaclass=SingletonMeta):
                     raise exc
                 else:
                     await session.commit()
-                finally:
-                    await session.close()
+                # finally:
+                #     await session.close()
 
     class Base(AsyncAttrs, DeclarativeBase):
         pass

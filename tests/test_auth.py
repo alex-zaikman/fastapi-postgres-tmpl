@@ -1,10 +1,11 @@
+# import datetime
 # import datetime as dt
 # import os
 # import time
 # import time_machine
+
 from fastapi import status
 
-# from auth import API_ACCESS_TOKEN_EXPIRE_MINUTES
 from tests.api_base import TestAPIBase, AuthHeader
 
 
@@ -23,10 +24,6 @@ class TestAuth(TestAPIBase):
 
         response = self.client.get(url='/user', headers={"Authorization": f"Bearer blasdfdfwerwewfer44r44fr44f4f4c4f4ff4f4"})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, "bad auth headers")
-
-    async def asyncSetUp(self):
-        await super().asyncSetUp()
-        self.headers = self.login('admin@gmail.com', 'admin123')
 
     async def test_refresh(self):
         response = self.client.get(url='/user', headers=self.headers.refresh)
@@ -49,6 +46,6 @@ class TestAuth(TestAPIBase):
     #         response = self.client.get(url='/user', headers=self.headers.auth)
     #         self.assertEqual(response.status_code, status.HTTP_200_OK, 'sunny path')
     #
-    #         traveller.shift(dt.timedelta(minutes=API_ACCESS_TOKEN_EXPIRE_MINUTES + 1))
+    #         traveller.shift(datetime.timedelta(minutes=555))
     #         response = self.client.get(url='/user', headers=self.headers.auth)
     #         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'expired token')
