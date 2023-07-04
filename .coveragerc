@@ -2,8 +2,8 @@
 [run]
 branch = True
 source =
-    src
-    tests
+    ./src
+    ./tests
 
 command_line = -m unittest discover -s=./tests
 
