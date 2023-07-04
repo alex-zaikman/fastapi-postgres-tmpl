@@ -116,12 +116,3 @@ def create_refresh_token(data: dict):
     data['token_title'] = TokenType.REFRESH
     encoded_jwt = jwt.encode({"exp": expire, **data}, API_REFRESH_SECRET_KEY, algorithm=API_ALGORITHM)
     return encoded_jwt
-
-
-# def get_logger(bt: BackgroundTasks,
-#                context_id: str = Depends(get_context)):
-#     return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
-
-
-if __name__ == '__main__':  # pragma: no cover
-    print(get_hash('admin123'))
