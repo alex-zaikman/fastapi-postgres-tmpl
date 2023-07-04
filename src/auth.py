@@ -123,5 +123,5 @@ def create_refresh_token(data: dict):
 #     return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
 
 
-if __name__ == '__main__':
+if __name__ == '__main__':  # pragma: no cover
     print(get_hash('admin123'))

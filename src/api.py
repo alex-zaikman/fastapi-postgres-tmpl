@@ -33,8 +33,8 @@ app.add_middleware(
 
 
 @app.on_event("startup")
-async def startup():
-    db = DataBase()  # warmup db connection
+async def startup():  # pragma: no cover
+    db = DataBase()
     async with db.engine.begin() as conn:
         await conn.run_sync(db.Base.metadata.create_all)
 
