@@ -1,6 +1,7 @@
 from fastapi.openapi.models import Response
 from fastapi.testclient import TestClient
 
+from database import DataBase
 from tests.base import TestBase
 
 
@@ -21,9 +22,12 @@ class AuthHeader:
 class TestAPIBase(TestBase):
     async def asyncSetUp(self):
         await super().asyncSetUp()
-        await self.init_db()
         from api import app
         self.client = TestClient(app)
+
+    async def asyncTearDown(self) -> None:
+        self.client.close()
+        await super().asyncTearDown()
 
     def login(self, email, password) -> AuthHeader:
         response = self.client.post("/token", data={"username": email, "password": password})

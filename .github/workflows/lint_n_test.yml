@@ -1,0 +1,49 @@
+name: Checkin Gate
+on: [pull_request]
+jobs:
+  pylint:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -U -r requirements.txt
+        pip install -U -r requirements.dev.txt
+    - name: Analysing the code with pylint
+      run: |
+        pylint $(git ls-files '*.py')
+
+  unitest_with_coverage:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [ "3.10" ]
+        coverage-percentage: ["100"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install postgresql
+        run: |
+          apt update
+          apt install postgresql postgresql-contrib
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U -r requirements.txt
+          pip install -U -r requirements.dev.txt
+      - name: Analysing the code with coverage
+        run: |
+          python -m coverage run
+#          python -m coverage report --fail-under ${{ matrix.coverage-percentage }}
+          python -m coverage report

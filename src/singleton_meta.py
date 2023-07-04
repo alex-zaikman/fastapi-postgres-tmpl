@@ -1,5 +1,8 @@
+from weakref import WeakValueDictionary
+
+
 class SingletonMeta(type):
-    _instances = {}
+    _instances = WeakValueDictionary()
 
     def __call__(cls, *args, **kwargs):
         if cls not in cls._instances:
