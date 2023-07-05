@@ -1,6 +1,6 @@
 import os
 
-import psycopg
+import psycopg2
 import testing.postgresql
 
 from singleton_meta import SingletonMeta
@@ -14,7 +14,7 @@ class _Postgresql(metaclass=SingletonMeta):
     def _init_db(db):
         os.environ.setdefault('DB_NULL_POOL', 'true')
         os.environ.setdefault('DB_ECHO', 'true')
-        conn = psycopg.connect(db.url())
+        conn = psycopg2.connect(db.url())
         cur = conn.cursor()
 
         with open(os.path.join(os.path.dirname(__file__), '../db/init.sql'), 'r', encoding="UTF-8") as fp:

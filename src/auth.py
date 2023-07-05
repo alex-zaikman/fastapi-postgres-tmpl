@@ -89,13 +89,11 @@ async def validate_token(token__,
                          credentials_exception,
                          security_scopes=None):
     if security_scopes:
-        # validate Scopes
         if not set(payload['scopes']).intersection(security_scopes.scopes):
             raise credentials_exception
 
-    _user = await get_db_user(session=session, email=payload['email'])
+        _user = await get_db_user(session=session, email=payload['email'])
 
-    if security_scopes:
         if set(_user.scopes) != set(payload['scopes']):
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
@@ -118,12 +116,3 @@ def create_refresh_token(data: dict):
     data['token_title'] = TokenType.REFRESH
     encoded_jwt = jwt.encode({"exp": expire, **data}, API_REFRESH_SECRET_KEY, algorithm=API_ALGORITHM)
     return encoded_jwt
-
-
-# def get_logger(bt: BackgroundTasks,
-#                context_id: str = Depends(get_context)):
-#     return lambda msg, func=logger.info: bt.add_task(func, msg, extra={"context_id": context_id})
-
-
-if __name__ == '__main__':
-    print(get_hash('admin123'))

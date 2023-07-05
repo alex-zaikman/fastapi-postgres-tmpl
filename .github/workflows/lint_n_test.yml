@@ -45,4 +45,4 @@ jobs:
       - name: Analysing the code with coverage
         run: |
           python -m coverage run
-          python -m coverage report
+          python -m coverage report --fail-under ${{ matrix.coverage-percentage }}

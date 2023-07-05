@@ -1,8 +1,5 @@
-# import datetime
-# import datetime as dt
-# import os
-# import time
-# import time_machine
+import datetime
+import time_machine
 
 from fastapi import status
 
@@ -15,7 +12,14 @@ class TestAuth(TestAPIBase):
         await super().asyncSetUp()
         self.headers = self.login('admin@gmail.com', 'admin123')  # pylint: disable=attribute-defined-outside-init
 
-    async def test_auth(self):
+    def test_bad_login(self):
+        response = self.client.post("/token", data={"username": 'admin@gmail.com', "password": 'password'})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'no auth headers')
+
+        response = self.client.post("/token", data={"username": 'user', "password": 'admin123'})
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'no auth headers')
+
+    def test_auth(self):
         response = self.client.get(url='/user', headers=self.headers.auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'sunny path')
 
@@ -25,7 +29,7 @@ class TestAuth(TestAPIBase):
         response = self.client.get(url='/user', headers={"Authorization": "Bearer blasdfdfwerwewfer44r44fr44f4f4c4f4ff4f4"})
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, "bad auth headers")
 
-    async def test_refresh(self):
+    def test_refresh(self):
         response = self.client.get(url='/user', headers=self.headers.refresh)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'ep with refresh')
 
@@ -40,12 +44,13 @@ class TestAuth(TestAPIBase):
         response = self.client.get(url='/user', headers=new_headers.auth)
         self.assertEqual(response.status_code, status.HTTP_200_OK, 'sunny path')
 
-    # async def test_expiration(self):
-    #
-    #     with time_machine.travel(0, tick=False) as traveller:
-    #         response = self.client.get(url='/user', headers=self.headers.auth)
-    #         self.assertEqual(response.status_code, status.HTTP_200_OK, 'sunny path')
-    #
-    #         traveller.shift(datetime.timedelta(minutes=555))
-    #         response = self.client.get(url='/user', headers=self.headers.auth)
-    #         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'expired token')
+    def test_expiration(self):
+
+        with time_machine.travel(0, tick=False) as traveller:
+            headers = self.login('admin@gmail.com', 'admin123')  # pylint: disable=attribute-defined-outside-init
+            response = self.client.get(url='/user', headers=headers.auth)
+            self.assertEqual(response.status_code, status.HTTP_200_OK, 'sunny path')
+
+            traveller.shift(datetime.timedelta(minutes=555))
+            response = self.client.get(url='/user', headers=headers.auth)
+            self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED, 'expired token')
